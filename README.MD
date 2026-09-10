@@ -83,3 +83,14 @@ Windows에서는 다음 명령으로 애플리케이션을 실행한다.
 - 컨트롤러는 `Model`을 통해 화면에 데이터를 전달한다.
 - Thymeleaf는 전달받은 데이터를 HTML에 표현한다.
 - 컨트롤러의 반환값과 `templates` 폴더의 HTML 파일 이름이 연결된다.
+
+## 6. 수업 후 과제
+
+두 번째 Hello 페이지를 추가해 컨트롤러에서 여러 데이터를 전달하는 과제를 수행했다.
+
+- 기존 `hello.html`에 `/hello2`로 이동하는 링크 추가
+- `DemoController`에 `/hello2` URL 매핑 추가
+- `Model`에 이름, 인사말, 날짜 표현, 날씨 표현, 상태 등 5개 속성 추가
+- `hello2.html`에서 5개 속성을 Thymeleaf로 출력
+
+애플리케이션 실행 후 `http://localhost:8080/hello`에서 링크를 누르거나, `http://localhost:8080/hello2`에 직접 접속해 결과를 확인할 수 있다.
