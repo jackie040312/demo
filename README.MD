@@ -74,3 +74,72 @@ public String hello(Model model) {
 ## 느낀 점
 
 직접 URL 매핑을 해 보면서 URL, Controller의 반환값, HTML 파일 이름이 서로 연결된다는 점을 이해했다. Model과 Thymeleaf로 데이터를 전달하는 과정도 실습해 보니 MVC 구조가 전보다 조금 더 익숙해졌다.
+
+---
+
+# 자바웹프로그래밍 3주차
+
+> 2026년 9월 16일  
+> 20231145 신동우
+
+## 이번 주 실습 내용
+
+이번 수업에서는 Bootstrap 포트폴리오 템플릿을 Spring Boot 프로젝트에 적용하고, 내 소개와 관심 기술을 담은 개인 포트폴리오로 수정했다.
+
+- HTML 템플릿을 `templates` 폴더에 적용
+- CSS, JavaScript, 이미지, 폰트를 `static` 폴더에 분리
+- Thymeleaf를 이용해 정적 파일과 페이지 경로 연결
+- 메뉴와 자기소개를 한글로 수정하고 프로필 이미지 적용
+- 웹, AI, 보안, 게임의 4개 기술 영역과 아이콘 구성
+- 기술별 상세 페이지를 `public` 폴더에 추가
+- PC와 모바일 화면에서 반응형 레이아웃 확인
+
+## 주요 프로젝트 구조
+
+```text
+src/main/resources
+├── templates
+│   └── index.html
+├── public
+│   ├── detailed_web.html
+│   ├── detailed_ai.html
+│   ├── detailed_security.html
+│   └── detailed_game.html
+└── static
+    ├── css
+    ├── fonts
+    ├── images
+    └── js
+```
+
+`templates`의 메인 화면은 Thymeleaf가 처리하고, `static`은 CSS나 이미지 같은 정적 파일을 보관한다. 별도의 Controller가 필요 없는 기술 상세 페이지는 `public`에 작성했다.
+
+## 포트폴리오 구현
+
+메인 페이지에는 이름, 전공, 관심 분야와 학습 목표를 작성했다. 기술 영역은 웹, 인공지능, 보안, 게임으로 나누고 각 영역에 맞는 Bootstrap 아이콘을 사용했다.
+
+각 카드의 `자세히 보기` 버튼을 누르면 기술별 상세 페이지가 새 창으로 열린다. 새 창에서 기존 페이지를 조작하지 못하도록 다음 속성도 함께 사용했다.
+
+```html
+target="_blank" rel="noopener noreferrer"
+```
+
+## 실행 방법
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+- 메인 페이지: `http://localhost:8080/`
+- 웹 상세 페이지: `http://localhost:8080/detailed_web.html`
+- AI 상세 페이지: `http://localhost:8080/detailed_ai.html`
+- 보안 상세 페이지: `http://localhost:8080/detailed_security.html`
+- 게임 상세 페이지: `http://localhost:8080/detailed_game.html`
+
+### 최종 실행 화면
+
+![3주차 포트폴리오 메인 화면](docs/images/week3-portfolio-main.png)
+
+## 느낀 점
+
+완성된 템플릿을 Spring Boot 구조에 맞게 옮기면서 `templates`, `static`, `public` 폴더의 차이를 이해할 수 있었다. 같은 디자인을 재활용해 여러 상세 페이지를 만들고 모바일 화면까지 확인하면서, 웹페이지를 구조적으로 관리하는 방법을 배웠다.
