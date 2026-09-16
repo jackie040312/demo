@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="신동우 포트폴리오의 웹 개발 기술 상세 소개">
+    <title>웹 개발 기술 - 신동우 포트폴리오</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #14b789;
+            --secondary: #535da1;
+            --surface: #ffffff;
+            --background: #f4f7f6;
+            --text: #212529;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            font-family: "DM Sans", "Noto Sans KR", sans-serif;
+        }
+
+        .detail-nav {
+            background: var(--surface);
+            border-bottom: 1px solid #e7e7e7;
+        }
+
+        .brand {
+            color: var(--text);
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .home-link {
+            border: 2px solid var(--primary);
+            border-radius: 999px;
+            color: var(--primary);
+            font-weight: 700;
+            padding: 0.6rem 1rem;
+            text-decoration: none;
+        }
+
+        .hero-card {
+            background: var(--surface);
+            border-radius: 24px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .eyebrow {
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .price-badge {
+            background: var(--primary);
+            border-radius: 14px;
+            color: white;
+            display: inline-block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0.75rem 1.25rem;
+        }
+
+        .skill-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 18px;
+            height: 100%;
+            padding: 1.5rem;
+        }
+
+        .skill-card i {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        .roadmap-item {
+            background: #eef9f5;
+            border-left: 5px solid var(--primary);
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+            padding: 1rem;
+        }
+
+        @media (max-width: 576px) {
+            .brand { font-size: 1.35rem; }
+            .home-link { padding: 0.45rem 0.7rem; }
+            .hero-card { border-radius: 16px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="detail-nav py-3">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a class="brand" href="/">DONGWOO</a>
+            <a class="home-link" href="/"><i class="bi-house-door me-1"></i> 메인으로 돌아가기</a>
+        </div>
+    </nav>
+
+    <main class="container py-5">
+        <section class="hero-card p-4 p-md-5 mb-5">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <p class="eyebrow mb-2">SKILLS / WEB</p>
+                    <h1 class="display-5 fw-bold mb-3">웹(Web) 개발</h1>
+                    <p class="lead mb-0">HTML과 CSS로 화면을 구성하고 Java와 Spring Boot로 서버 기능을 연결하며, 사용자에게 편리하고 안전한 웹 서비스를 만드는 방법을 공부하고 있습니다.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <span class="price-badge">web</span>
+                </div>
+            </div>  
+        </section>
+
+        <section class="mb-5">
+            <h2 class="fw-bold mb-4">배운 기술</h2>
+            <div class="row g-3">
+                <div class="col-sm-6 col-lg-3">
+                    <article class="skill-card">
+                        <i class="bi-code-slash"></i>
+                        <h3 class="h5 fw-bold mt-3">HTML</h3>
+                        <p class="mb-0">웹 문서의 구조와 의미를 작성합니다.</p>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <article class="skill-card">
+                        <i class="bi-palette"></i>
+                        <h3 class="h5 fw-bold mt-3">CSS</h3>
+                        <p class="mb-0">반응형 화면과 시각적인 스타일을 구성합니다.</p>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <article class="skill-card">
+                        <i class="bi-cup"></i>
+                        <h3 class="h5 fw-bold mt-3">Java</h3>
+                        <p class="mb-0">객체지향 문법으로 서버 로직을 구현합니다.</p>
+                    </article>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <article class="skill-card">
+                        <i class="bi-diagram-3"></i>
+                        <h3 class="h5 fw-bold mt-3">Spring Boot</h3>
+                        <p class="mb-0">요청과 응답을 처리하는 웹 애플리케이션을 만듭니다.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="fw-bold mb-4">학습 로드맵</h2>
+            <div class="roadmap-item"><strong>현재 경험:</strong> HTML, CSS, JavaScript, Java, Spring Boot</div>
+            <div class="roadmap-item"><strong>다음 목표:</strong> REST API와 데이터베이스 연동</div>
+            <div class="roadmap-item"><strong>심화 목표:</strong> OAuth, HTTPS, WebSocket과 웹 보안</div>
+        </section>
+    </main>
+</body>
+</html>
