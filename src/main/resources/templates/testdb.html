@@ -18,15 +18,19 @@
             <tr>
                 <th scope="col">아이디(기본키)</th>
                 <th scope="col">이름</th>
+                <th scope="col">나이</th>
+                <th scope="col">성별</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="user : ${users}">
                 <td th:text="${user.id}"></td>
                 <td th:text="${user.name}"></td>
+                <td th:text="${user.age != null ? user.age : '미입력'}"></td>
+                <td th:text="${user.gender != null ? user.gender : '미입력'}"></td>
             </tr>
             <tr th:if="${#lists.isEmpty(users)}">
-                <td colspan="2">등록된 사용자가 없습니다.</td>
+                <td colspan="4">등록된 사용자가 없습니다.</td>
             </tr>
         </tbody>
     </table>

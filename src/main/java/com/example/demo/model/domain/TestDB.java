@@ -18,4 +18,8 @@ public class TestDB {
 
     @Column(nullable = true)
     private String name;
+
+    private Integer age;
+
+    private String gender;
 }
