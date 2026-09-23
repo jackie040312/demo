@@ -60,8 +60,6 @@ public String hello(Model model) {
 
 ## 2주차 과제
 
-수업 후에는 두 번째 Hello 페이지를 추가했다.
-
 - [hello.html](src/main/resources/templates/hello.html)에 `/hello2` 링크 추가
 - [DemoController.java](src/main/java/com/example/demo/DemoController.java)에 `hello2()` 매핑 추가
 - 이름, 인사말, 오늘, 날씨, 상태 총 5개 속성을 Model에 저장
@@ -120,26 +118,54 @@ src/main/resources
 
 각 카드의 `자세히 보기` 버튼을 누르면 기술별 상세 페이지가 새 창으로 열린다. 새 창에서 기존 페이지를 조작하지 못하도록 다음 속성도 함께 사용했다.
 
-```html
-target="_blank" rel="noopener noreferrer"
-```
-
-## 실행 방법
-
-```powershell
-.\mvnw.cmd spring-boot:run
-```
-
 - 메인 페이지: `http://localhost:8080/`
 - 웹 상세 페이지: `http://localhost:8080/detailed_web.html`
 - AI 상세 페이지: `http://localhost:8080/detailed_ai.html`
 - 보안 상세 페이지: `http://localhost:8080/detailed_security.html`
 - 게임 상세 페이지: `http://localhost:8080/detailed_game.html`
 
-### 최종 실행 화면
-
-![3주차 포트폴리오 메인 화면](docs/images/week3-portfolio-main.png)
-
 ## 느낀 점
 
 완성된 템플릿을 Spring Boot 구조에 맞게 옮기면서 `templates`, `static`, `public` 폴더의 차이를 이해할 수 있었다. 같은 디자인을 재활용해 여러 상세 페이지를 만들고 모바일 화면까지 확인하면서, 웹페이지를 구조적으로 관리하는 방법을 배웠다.
+
+---
+
+# 자바웹프로그래밍 4주차
+
+> 2026년 9월 23일
+>
+> 20231145 신동우
+
+## 이번 주 실습 내용
+
+이번 수업에서는 Spring Boot와 MySQL을 연결하고, DB에 저장한 사용자 목록을 웹페이지에 출력했다. (강의자료 29페이지까지)
+
+- JPA와 MySQL Connector를 설정하고 `spring` 데이터베이스 연결
+- Controller, Service, Repository, Entity로 역할 분리
+- `TestDB` 엔티티로 `testdb` 테이블 자동 생성
+- `findAll()`로 전체 사용자를 조회하고 `th:each`로 표에 출력
+
+## 데이터가 화면에 나오는 과정
+
+`/testdb` 요청 → Controller → Service → Repository → MySQL 조회 → Model에 저장 → `testdb.html` 출력
+
+Controller에서 목록을 `users`로 전달하고, 화면에서는 다음 코드로 아이디와 이름을 출력했다.
+
+```html
+<tr th:each="user : ${users}">
+    <td th:text="${user.id}"></td>
+    <td th:text="${user.name}"></td>
+</tr>
+```
+
+## 실행 결과
+
+실행 전 MySQL에 `spring` DB를 만들고, 프로젝트 최상위의 `application-local.properties`에 `spring.datasource.password=본인_DB_비밀번호`를 설정한다. 이 파일은 GitHub 업로드에서 제외된다. 파일 없이 실행할 때는 `DB_PASSWORD` 환경변수를 설정해도 된다.
+
+[실습 SQL](docs/sql/week4-testdb.sql)로 **홍길동**, **아저씨**를 추가한 뒤 [사용자 목록 페이지](http://localhost:8080/testdb)에서 정상 출력을 확인했다. 기존 메인 화면과 Hello 페이지도 정상 작동했다.
+
+![4주차 MySQL 사용자 목록 실행 결과](docs/images/week4-testdb-result.png)
+
+## 느낀 점
+
+역할별로 파일을 나누면서 요청과 데이터 조회의 흐름을 이해했다. DB에 저장한 값이 화면에 나오는 것을 보니 JPA와 Thymeleaf의 연결 과정이 더 잘 와닿았다.

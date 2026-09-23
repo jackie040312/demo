@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이터베이스 테스트</title>
+</head>
+<body>
+    <h1>User List</h1>
+
+    <!--/* 25페이지의 단일 사용자 출력 (29페이지에서 목록 출력으로 변경)
+    <p>아이디(기본키) : <span th:text="${data4.id}"></span></p>
+    <p>이름 : <span th:text="${data4.name}"></span></p>
+    */-->
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th scope="col">아이디(기본키)</th>
+                <th scope="col">이름</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.name}"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="2">등록된 사용자가 없습니다.</td>
+            </tr>
+        </tbody>
+    </table>
+    <p><a th:href="@{/}">홈페이지 메인</a></p>
+</body>
+</html>
