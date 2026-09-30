@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.model.domain.Member;
 import com.example.demo.model.repository.MemberRepository;
+import jakarta.servlet.http.Cookie;
 
 @SpringBootTest
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
@@ -112,7 +113,7 @@ class MemberFlowTests {
         mvc.perform(post("/signup").with(csrf()).param("username", username)
                 .param("password", "123123").param("passwordConfirm", "different").param("name", "회원"))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("비밀번호 확인이 일치하지 않습니다.")));
+            .andExpect(content().string(containsString("비밀번호가 일치하지 않습니다.")));
         assertThat(members.existsByUsername(username)).isFalse();
         mvc.perform(post("/login").with(csrf()).param("username", username).param("password", "123123"))
             .andExpect(redirectedUrl("/login?error"));
@@ -130,6 +131,41 @@ class MemberFlowTests {
         assertThat(encoder.matches("123123", firstHash)).isTrue();
         assertThat(encoder.matches("123123", secondHash)).isTrue();
         mvc.perform(post("/login").with(csrf()).param("username", first).param("password", "123123"))
-            .andExpect(redirectedUrl("/"));
+            .andExpect(redirectedUrl("/"))
+            .andExpect(cookie().doesNotExist("remember-me"));
+    }
+
+    @Test
+    void rememberMeRestoresLoginWithoutSessionAndLogoutClearsCookie() throws Exception {
+        String username = newUsername();
+        signup(username);
+        MvcResult login = mvc.perform(post("/login").with(csrf())
+                .param("username", username).param("password", "123123")
+                .param("remember-me", "on"))
+            .andExpect(redirectedUrl("/"))
+            .andExpect(cookie().maxAge("remember-me", 7 * 24 * 60 * 60))
+            .andExpect(cookie().httpOnly("remember-me", true))
+            .andReturn();
+        Cookie rememberMe = login.getResponse().getCookie("remember-me");
+        assertThat(rememberMe).isNotNull();
+        // 브라우저를 닫은 상황처럼 세션을 버리고, 영구 쿠키만 보내 재접속한다.
+        login.getRequest().getSession(false).invalidate();
+        mvc.perform(get("/testdb").cookie(rememberMe))
+            .andExpect(status().isOk());
+        mvc.perform(get("/").cookie(rememberMe))
+            .andExpect(content().string(containsString(username)))
+            .andExpect(content().string(containsString("action=\"/logout\"")));
+        mvc.perform(post("/logout").cookie(rememberMe).with(csrf()))
+            .andExpect(redirectedUrl("/login?logout"))
+            .andExpect(cookie().maxAge("remember-me", 0))
+            .andExpect(cookie().maxAge("JSESSIONID", 0));
+        mvc.perform(get("/testdb")).andExpect(redirectedUrl("/login"));
+    }
+
+    @Test
+    void invalidRememberMeCookieCannotAuthenticate() throws Exception {
+        mvc.perform(get("/testdb").cookie(new Cookie("remember-me", "invalid-token")))
+            .andExpect(redirectedUrl("/login"))
+            .andExpect(cookie().maxAge("remember-me", 0));
     }
 }

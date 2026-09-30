@@ -186,7 +186,7 @@ Controller에서 목록을 `users`로 전달하고, 화면에서는 다음 코�
 
 ## 이번 주 실습 내용
 
-이번 수업에서는 추가자료의 로그인·회원가입 화면을 활용해 회원가입, 로그인, 로그아웃을 구현했다. 기존 포트폴리오는 유지하고 회원 메뉴를 연결했다. (강의자료 27페이지까지)
+이번 수업에서는 추가자료의 로그인·회원가입 화면을 활용해 회원가입, 로그인, 로그아웃을 구현했다. 기존 포트폴리오는 유지하고 회원 메뉴를 연결했다. (강의자료 29페이지까지)
 
 - Spring Security로 로그인 여부에 따라 페이지 접근 제한
 - `Member` 엔티티와 Repository로 회원 정보를 MySQL에 저장
@@ -196,13 +196,30 @@ Controller에서 목록을 `users`로 전달하고, 화면에서는 다음 코�
 
 ## 실행과 확인
 
-[회원가입](http://localhost:8080/signup) → [로그인](http://localhost:8080/login) → [사용자 목록](http://localhost:8080/testdb) → 로그아웃 순서로 확인할 수 있다. 회원가입·로그인·접근 제한·로그아웃 등을 검사하는 자동 테스트 5개가 통과했다. 추가자료에 있는 ‘로그인 상태 유지’ 기능은 이후 실습에서 구현할 예정이다.
+[회원가입](http://localhost:8080/signup) → [로그인](http://localhost:8080/login) → [사용자 목록](http://localhost:8080/testdb) → 로그아웃 순서로 확인할 수 있다.
+
+### 로그인 화면
+
+![5주차 로그인 화면](docs/images/week5-login.jpg)
+
+### 회원가입 화면
+
+![5주차 회원가입 화면](docs/images/week5-signup.jpg)
 
 ## DB 계정 정보와 GitHub 업로드
 
 DB 계정 정보는 `src/main/resources/application-secret.properties`에 따로 보관하고, `.gitignore`에 등록해 업로드에서 제외했다. `application.properties`는 이 파일을 불러오도록 설정했다.
 
 다른 PC에서 실행하려면 위 파일을 만들고 본인의 `spring.datasource.username`과 `spring.datasource.password`를 입력하면 된다. 대신 `DB_USERNAME`, `DB_PASSWORD` 환경변수로 설정해도 된다. 4주차 방식인 프로젝트 최상위 `application-local.properties`도 계속 사용할 수 있다.
+
+로그인 유지 기능의 비밀키인 `app.security.remember-me-key`도 비공개 설정 파일에 추가했다. 다른 PC에서는 충분히 긴 무작위 키를 이 항목이나 `REMEMBER_ME_KEY` 환경변수에 설정해야 한다. 키는 서버를 다시 실행해도 같은 값을 사용하고, GitHub에는 올리지 않는다.
+
+## 5주차 과제 (29페이지)
+
+- ‘로그인 상태 유지’를 체크하면 7일 동안 유효한 `remember-me` 쿠키를 발급하도록 설정했다.
+- 기존 세션 없이 쿠키만으로 다시 접속해도 로그인되고, 로그아웃하면 쿠키가 삭제되는 것을 테스트했다.
+- 비밀번호와 비밀번호 확인이 다르면 ‘비밀번호가 일치하지 않습니다.’를 표시하고 DB에 저장하지 않도록 했다.
+- 자동 테스트 7개로 기존 로그인 기능과 과제 내용을 함께 확인했다.
 
 ## 느낀 점
 

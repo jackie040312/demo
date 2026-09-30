@@ -55,7 +55,7 @@ public class MemberService implements UserDetailsService {
             throw new IllegalArgumentException("비밀번호는 4자 이상, UTF-8 기준 72바이트 이내로 입력해 주세요.");
         }
         if (!password.equals(form.getPasswordConfirm())) {
-            throw new IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         if (form.getName() == null || form.getName().isBlank() || form.getName().length() > 50) {
             throw new IllegalArgumentException("이름은 1~50자로 입력해 주세요.");
