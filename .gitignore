@@ -34,3 +34,5 @@ build/
 
 # Local database credentials
 /application-local.properties
+application-secret.properties
+application-secret.properties

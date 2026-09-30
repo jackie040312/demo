@@ -175,3 +175,35 @@ Controller에서 목록을 `users`로 전달하고, 화면에서는 다음 코�
 `TestDB`에 나이(`age`)와 성별(`gender`)을 추가하고, [과제 SQL](docs/sql/week4-task32.sql)로 사용자 정보를 입력했다. 기존 두 명의 빈 정보를 채우고 김영희·이철수를 추가해, `/testdb`에서 네 명의 아이디·이름·나이·성별을 확인했다.
 
 ![4주차 과제 사용자 정보 출력 결과](docs/images/week4-task32-result.png)
+
+---
+
+# 자바웹프로그래밍 5주차
+
+> 2026년 9월 30일
+>
+> 20231145 신동우
+
+## 이번 주 실습 내용
+
+이번 수업에서는 추가자료의 로그인·회원가입 화면을 활용해 회원가입, 로그인, 로그아웃을 구현했다. 기존 포트폴리오는 유지하고 회원 메뉴를 연결했다. (강의자료 27페이지까지)
+
+- Spring Security로 로그인 여부에 따라 페이지 접근 제한
+- `Member` 엔티티와 Repository로 회원 정보를 MySQL에 저장
+- BCrypt로 비밀번호를 해시 처리하고, 중복 아이디와 비밀번호 확인 검사
+- 로그인하면 아이디와 로그아웃 버튼을 표시하고, 로그아웃하면 세션 종료
+- `/testdb`는 로그인한 사용자만 접근하도록 설정
+
+## 실행과 확인
+
+[회원가입](http://localhost:8080/signup) → [로그인](http://localhost:8080/login) → [사용자 목록](http://localhost:8080/testdb) → 로그아웃 순서로 확인할 수 있다. 회원가입·로그인·접근 제한·로그아웃 등을 검사하는 자동 테스트 5개가 통과했다. 추가자료에 있는 ‘로그인 상태 유지’ 기능은 이후 실습에서 구현할 예정이다.
+
+## DB 계정 정보와 GitHub 업로드
+
+DB 계정 정보는 `src/main/resources/application-secret.properties`에 따로 보관하고, `.gitignore`에 등록해 업로드에서 제외했다. `application.properties`는 이 파일을 불러오도록 설정했다.
+
+다른 PC에서 실행하려면 위 파일을 만들고 본인의 `spring.datasource.username`과 `spring.datasource.password`를 입력하면 된다. 대신 `DB_USERNAME`, `DB_PASSWORD` 환경변수로 설정해도 된다. 4주차 방식인 프로젝트 최상위 `application-local.properties`도 계속 사용할 수 있다.
+
+## 느낀 점
+
+비밀번호는 원문으로 저장하지 않고 해시로 비교한다는 점을 배웠다. 로그인 기능뿐 아니라 DB 비밀번호가 GitHub에 올라가지 않도록 설정 파일을 분리하는 것도 중요하다는 것을 알게 됐다.
