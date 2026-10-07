@@ -1,8 +1,13 @@
 package com.example.demo.model.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +21,8 @@ import com.example.demo.model.repository.MemberRepository;
 
 @Service
 public class MemberService implements UserDetailsService {
+    private static final List<String> ROLES = List.of("USER", "MANAGER", "ADMIN");
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -59,6 +66,48 @@ public class MemberService implements UserDetailsService {
         }
         if (form.getName() == null || form.getName().isBlank() || form.getName().length() > 50) {
             throw new IllegalArgumentException("이름은 1~50자로 입력해 주세요.");
+        }
+    }
+
+    /** 로그인한 아이디로 DB 회원 정보를 조회한다. */
+    public Member findByUsername(String username) {
+        return memberRepository.findByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "회원이 존재하지 않습니다 : " + username));
+    }
+
+    /** 전체 회원을 번호 순서로 조회한다. */
+    public List<Member> findAll() {
+        return memberRepository.findAll(Sort.by("id"));
+    }
+
+    /** 관리자가 선택한 허용 권한으로 회원 권한을 변경한다. */
+    @PreAuthorize("hasRole('ADMIN')")
+    public void changeRole(Long id, String role) {
+        if (!ROLES.contains(role)) {
+            throw new IllegalArgumentException("허용되지 않는 권한입니다 : " + role);
+        }
+        Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+        rejectSelfManagement(member);
+        member.setRole(role);
+        memberRepository.save(member);
+    }
+
+    /** 회원 번호에 해당하는 회원을 삭제한다. */
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteMember(Long id) {
+        Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+        rejectSelfManagement(member);
+        memberRepository.delete(member);
+    }
+
+    /** 관리자가 실수로 자기 권한을 낮추거나 자기 계정을 삭제하지 못하게 한다. */
+    private void rejectSelfManagement(Member member) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && member.getUsername().equals(authentication.getName())) {
+            throw new IllegalArgumentException("자기 자신의 권한 변경·삭제는 할 수 없습니다.");
         }
     }
 
