@@ -2,6 +2,7 @@ package com.example.demo.model.service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
@@ -32,6 +33,9 @@ public class MemberService implements UserDetailsService {
     }
 
     public Member signup(MemberForm form) {
+        if (isBlank(form.getUsername()) || isBlank(form.getPassword()) || isBlank(form.getName())) {
+            throw new IllegalArgumentException("아이디, 비밀번호, 이름은 필수입니다.");
+        }
         validate(form);
         if (memberRepository.existsByUsername(form.getUsername())) {
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
@@ -69,6 +73,10 @@ public class MemberService implements UserDetailsService {
         }
     }
 
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
     /** 로그인한 아이디로 DB 회원 정보를 조회한다. */
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username)
@@ -81,17 +89,32 @@ public class MemberService implements UserDetailsService {
         return memberRepository.findAll(Sort.by("id"));
     }
 
+    /** 아이디나 이름에 검색어가 포함된 회원을 조회하고, 빈 검색어이면 전체를 반환한다. */
+    public List<Member> findAll(String keyword) {
+        if (isBlank(keyword)) {
+            return findAll();
+        }
+        String value = keyword.strip();
+        return memberRepository
+            .findByUsernameContainingIgnoreCaseOrNameContainingIgnoreCaseOrderByIdAsc(value, value);
+    }
+
+    /** 회원 번호로 한 명을 조회한다. API에서는 없는 번호를 404로 응답한다. */
+    public Optional<Member> findById(Long id) {
+        return memberRepository.findById(id);
+    }
+
     /** 관리자가 선택한 허용 권한으로 회원 권한을 변경한다. */
     @PreAuthorize("hasRole('ADMIN')")
-    public void changeRole(Long id, String role) {
-        if (!ROLES.contains(role)) {
-            throw new IllegalArgumentException("허용되지 않는 권한입니다 : " + role);
+    public Member changeRole(Long id, String newRole) {
+        if (!ROLES.contains(newRole)) {
+            throw new IllegalArgumentException("허용되지 않는 권한입니다 : " + newRole);
         }
         Member member = memberRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
         rejectSelfManagement(member);
-        member.setRole(role);
-        memberRepository.save(member);
+        member.setRole(newRole);
+        return memberRepository.save(member);
     }
 
     /** 회원 번호에 해당하는 회원을 삭제한다. */

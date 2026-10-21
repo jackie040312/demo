@@ -34,6 +34,12 @@ public class AdminController {
         return "admin/members";
     }
 
+    /** 7주차 제공 화면: JavaScript가 REST API를 호출해 회원 목록을 그린다. */
+    @GetMapping("/members-api")
+    public String membersApi() {
+        return "admin/members-api";
+    }
+
     @PostMapping("/members/{id}/role")
     public String changeRole(@PathVariable Long id, @RequestParam String role,
             RedirectAttributes redirect) {

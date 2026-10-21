@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.MockMvcPrint;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.access.AccessDeniedException;
@@ -105,7 +106,7 @@ class MemberFlowTests {
 
         mvc.perform(post("/logout").session(session)).andExpect(status().isForbidden());
         mvc.perform(get("/testdb").session(session)).andExpect(status().isForbidden());
-        mvc.perform(post("/logout").session(session).with(csrf()))
+        mvc.perform(post("/logout").session(session).with(csrf()).accept(MediaType.TEXT_HTML))
             .andExpect(redirectedUrl("/login?logout"))
             .andExpect(cookie().maxAge("JSESSIONID", 0));
         assertThat(session.isInvalid()).isTrue();
@@ -165,7 +166,7 @@ class MemberFlowTests {
         mvc.perform(get("/").cookie(rememberMe))
             .andExpect(content().string(containsString(username)))
             .andExpect(content().string(containsString("action=\"/logout\"")));
-        mvc.perform(post("/logout").cookie(rememberMe).with(csrf()))
+        mvc.perform(post("/logout").cookie(rememberMe).with(csrf()).accept(MediaType.TEXT_HTML))
             .andExpect(redirectedUrl("/login?logout"))
             .andExpect(cookie().maxAge("remember-me", 0))
             .andExpect(cookie().maxAge("JSESSIONID", 0));
