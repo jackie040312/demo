@@ -47,9 +47,17 @@ https://templatemo.com/tm-578-first-portfolio
             @media (min-width: 992px) {
                 .navbar-expand-lg .navbar-nav .nav-link { margin-left: 12px; margin-right: 12px; }
             }
-            @media (min-width: 992px) and (max-width: 1199px) {
-                .navbar-expand-lg .navbar-nav .nav-link { margin-left: 7px; margin-right: 7px; font-size: 15px; }
+            /* [9주차] 게시판 메뉴 추가에 맞춰 화면 폭별로 간격 조정 */
+            @media (min-width: 1200px) and (max-width: 1399px) {
+                .navbar-expand-lg .navbar-nav .nav-link { margin-left: 8px; margin-right: 8px; font-size: 15px; }
                 .navbar i.navbar-icon { display: none; }
+            }
+            @media (min-width: 992px) and (max-width: 1199px) {
+                .navbar-expand-lg .navbar-nav .nav-link { margin-left: 4px; margin-right: 4px; font-size: 13.5px; }
+                .navbar i.navbar-icon { display: none; }
+                .navbar .role-badge { display: none; }
+                .navbar .custom-btn { padding: 8px 14px; }
+                .navbar-brand { font-size: 24px; }
             }
         </style>
     </head>
@@ -102,6 +110,10 @@ https://templatemo.com/tm-578-first-portfolio
 
                         <li class="nav-item">
                             <a class="nav-link click-scroll" href="#section_5">연락처</a>
+                        </li>
+                        <!-- [9주차] 게시판 목록·상세는 누구나, 글쓰기는 로그인 필요 -->
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/board}">게시판</a>
                         </li>
                         <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'MANAGER')">
                             <a class="nav-link" th:href="@{/testdb}">회원목록</a>

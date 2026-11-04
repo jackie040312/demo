@@ -35,6 +35,7 @@ public class SecurityConfig {
                     "/detailed_security.html", "/detailed_game.html").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/fonts/**").permitAll()
                 .requestMatchers("/api/hello").permitAll()
+                .requestMatchers("/board", "/board/{id:\\d+}").permitAll()
                 .requestMatchers("/testdb").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
