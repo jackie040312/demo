@@ -3,6 +3,8 @@ package com.example.demo.model.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,6 +22,8 @@ import com.example.demo.model.repository.PostRepository;
 
 @Service
 public class PostService {
+    public static final int PAGE_SIZE = 10;
+
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
@@ -33,9 +37,24 @@ public class PostService {
         return postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    /** 로그인한 회원이 작성한 글만 최신순으로 조회한다. */
-    public List<Post> findMyPosts(String username) {
-        return postRepository.findByAuthor_UsernameOrderByIdDesc(username);
+    /** 로그인한 회원의 글만 최신순으로 10개씩 조회한다. */
+    public Page<Post> findMyPosts(String username, int page) {
+        PageRequest pageable = PageRequest.of(Math.max(page, 0), PAGE_SIZE,
+            Sort.by(Sort.Direction.DESC, "id"));
+        return postRepository.findByAuthor_Username(username, pageable);
+    }
+
+    /** 검색 범위에 따라 제목·내용 또는 작성자 이름을 검색한다. */
+    public Page<Post> findPage(String type, String keyword, int page) {
+        PageRequest pageable = PageRequest.of(Math.max(page, 0), PAGE_SIZE,
+            Sort.by(Sort.Direction.DESC, "id"));
+        if (keyword == null || keyword.isBlank()) {
+            return postRepository.findAll(pageable);
+        }
+        if ("writer".equals(type)) {
+            return postRepository.searchByWriter(keyword.trim(), pageable);
+        }
+        return postRepository.search(keyword.trim(), pageable);
     }
 
     /** 로그인한 회원을 작성자로 지정해 새 글을 저장한다. */
@@ -85,6 +104,7 @@ public class PostService {
     }
 
     /** 작성자 본인 또는 관리자가 글을 삭제한다. */
+    @Transactional
     public void delete(Long id) {
         Post post = findById(id);
         if (!isAdmin()) {

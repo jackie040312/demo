@@ -40,9 +40,25 @@
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                         <h5 class="m-0">
                             <i class="bi-list-ul me-2"></i>글 목록
-                            <small class="text-muted" th:text="|전체 ${#lists.size(posts)}개|">전체 0개</small>
+                            <small class="text-muted" th:text="|전체 ${page != null ? page.totalElements : #lists.size(posts)}개|">전체 0개</small>
                         </h5>
-                        <a sec:authorize="isAuthenticated()" th:href="@{/board/write}" class="btn btn-primary btn-sm-custom"><i class="bi-pencil me-1"></i>글쓰기</a>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <form th:if="${listTitle == null}" th:action="@{/board}" method="get" class="d-flex gap-2 board-search">
+                                <select name="type" class="form-select form-select-sm" aria-label="검색 범위">
+                                    <option value="all" th:selected="${type == 'all'}">제목+내용</option>
+                                    <option value="writer" th:selected="${type == 'writer'}">작성자</option>
+                                </select>
+                                <input type="search" name="keyword" th:value="${keyword}" class="form-control form-control-sm" placeholder="검색어 입력" aria-label="검색어">
+                                <button type="submit" class="btn btn-outline-primary btn-sm-custom text-nowrap"><i class="bi-search me-1"></i>검색</button>
+                            </form>
+                            <a sec:authorize="isAuthenticated()" th:href="@{/board/write}" class="btn btn-primary btn-sm-custom text-nowrap"><i class="bi-pencil me-1"></i>글쓰기</a>
+                        </div>
+                    </div>
+
+                    <div th:if="${keyword != null and !#strings.isEmpty(keyword)}" class="search-info mb-3">
+                        <i class="bi-search me-1"></i><strong th:text="|'${keyword}'|">'스프링'</strong> 검색 결과
+                        <strong th:text="${page != null ? page.totalElements : #lists.size(posts)}">0</strong>개
+                        <a th:href="@{/board}" class="ms-2 small">전체 목록 보기</a>
                     </div>
 
                     <div class="table-responsive">
@@ -55,6 +71,7 @@
                                     <td th:text="${post.id}">1</td>
                                     <td class="text-start">
                                         <a th:href="@{/board/{id}(id=${post.id})}" th:text="${post.title}" class="board-title">제목</a>
+                                        <span th:if="${post.comments.size() > 0}" class="comment-count" th:text="|[${post.comments.size()}]|">[3]</span>
                                         <span th:if="${post.updatedAt != null}" class="edited-badge">수정됨</span>
                                     </td>
                                     <td th:text="${post.author.name}">홍길동</td>
@@ -62,11 +79,30 @@
                                     <td th:text="${post.viewCount}">0</td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(posts)}">
-                                    <td colspan="5" class="text-muted py-4">아직 글이 없습니다. 첫 글을 써 보세요!</td>
+                                    <td colspan="5" class="text-muted py-4" th:text="${keyword != null and !#strings.isEmpty(keyword)} ? '검색 결과가 없습니다.' : '아직 글이 없습니다. 첫 글을 써 보세요!'">아직 글이 없습니다.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- page는 0부터 시작하며, 화면의 번호는 1부터 표시한다. -->
+                    <nav th:if="${page != null and page.totalPages > 1 and !page.empty}" class="mt-4" aria-label="게시글 페이지"
+                         th:with="url=${pageUrl ?: '/board'},
+                                  start=${T(java.lang.Math).max(0, page.number - 2)},
+                                  end=${T(java.lang.Math).min(page.totalPages - 1, page.number + 2)}">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                                <a class="page-link" th:href="${listTitle == null} ? @{${url}(page=${page.number - 1},keyword=${keyword},type=${type})} : @{${url}(page=${page.number - 1})}">이전</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(start, end)}" th:classappend="${i == page.number} ? 'active'">
+                                <a class="page-link" th:href="${listTitle == null} ? @{${url}(page=${i},keyword=${keyword},type=${type})} : @{${url}(page=${i})}" th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                                <a class="page-link" th:href="${listTitle == null} ? @{${url}(page=${page.number + 1},keyword=${keyword},type=${type})} : @{${url}(page=${page.number + 1})}">다음</a>
+                            </li>
+                        </ul>
+                        <p class="text-center text-muted small mt-2 mb-0" th:text="|${page.number + 1} / ${page.totalPages} 페이지|">1 / 1 페이지</p>
+                    </nav>
                 </div>
             </div>
         </main>
