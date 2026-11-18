@@ -51,4 +51,16 @@ public class Post {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Comment> comments = new ArrayList<>();
+
+    /** 정원이 없으면 일반 글, 있으면 모집글이다. */
+    private Integer capacity;
+
+    @Column(nullable = false)
+    private int appliedCount = 0;
+
+    private String posterFile;
+
+    public boolean isRecruit() { return capacity != null; }
+    public boolean isFull() { return isRecruit() && appliedCount >= capacity; }
+    public int getRemaining() { return isRecruit() ? capacity - appliedCount : 0; }
 }

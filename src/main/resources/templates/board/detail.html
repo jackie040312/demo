@@ -24,6 +24,7 @@
 
         <main class="board-body">
             <div class="container">
+                <div th:if="${param.deleteError}" class="alert alert-danger py-2"><i class="bi-exclamation-circle me-1"></i> 신청자가 있는 모집글은 삭제할 수 없습니다.</div>
                 <div class="board-card">
                     <h3 class="mb-2" th:text="${post.title}">제목</h3>
                     <div class="post-meta d-flex flex-wrap gap-3 pb-3 mb-3 border-bottom">
@@ -32,6 +33,24 @@
                         <span><i class="bi-clock me-1"></i><span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2026-10-20 10:00</span></span>
                         <span th:if="${post.updatedAt != null}"><i class="bi-pencil me-1"></i>수정 <span th:text="${#temporals.format(post.updatedAt, 'yyyy-MM-dd HH:mm')}"></span></span>
                         <span><i class="bi-eye me-1"></i>조회 <span th:text="${post.viewCount}">0</span></span>
+                    </div>
+
+                    <div th:if="${post.recruit}" class="recruit-box d-flex flex-wrap gap-4 align-items-center mb-4">
+                        <img th:if="${post.posterFile != null}" th:src="@{/uploads/{f}(f=${post.posterFile})}" class="recruit-poster" alt="모집 포스터">
+                        <div class="flex-grow-1">
+                            <span th:if="${post.full}" class="recruit-badge closed">마감</span>
+                            <span th:unless="${post.full}" class="recruit-badge">모집 중</span>
+                            <p class="mt-2 mb-1">정원 <strong th:text="${post.capacity}">5</strong>명 ·
+                                신청 <strong th:text="${post.appliedCount}">0</strong>명 ·
+                                남은 자리 <strong class="text-primary" th:text="${post.remaining}">5</strong></p>
+                            <div class="progress mb-3" style="height: 8px">
+                                <div class="progress-bar" th:style="|width: ${post.appliedCount * 100 / post.capacity}%|"></div>
+                            </div>
+                            <form sec:authorize="isAuthenticated()" th:unless="${post.full}" th:action="@{/cart/{id}(id=${post.id})}" method="post" class="m-0">
+                                <button type="submit" class="btn btn-primary btn-sm-custom"><i class="bi-basket me-1"></i>신청 바구니에 담기</button>
+                            </form>
+                            <p sec:authorize="isAnonymous()" class="text-muted small mb-0"><a th:href="@{/login}">로그인</a>하면 신청할 수 있습니다.</p>
+                        </div>
                     </div>
 
                     <div class="post-content" th:text="${post.content}">내용</div>

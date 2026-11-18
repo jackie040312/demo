@@ -27,7 +27,7 @@
                 <div class="board-card">
                     <div th:if="${error}" class="alert alert-danger py-2"><i class="bi-exclamation-circle me-1"></i> <span th:text="${error}">에러</span></div>
 
-                    <form th:action="${postId == null} ? @{/board/write} : @{/board/{id}/edit(id=${postId})}" method="post">
+                    <form th:action="${postId == null} ? @{/board/write} : @{/board/{id}/edit(id=${postId})}" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="title" class="form-label">제목</label>
                             <input type="text" class="form-control" id="title" name="title" th:value="${postForm?.title}"
@@ -37,6 +37,19 @@
                             <label for="content" class="form-label">내용</label>
                             <textarea class="form-control" id="content" name="content" rows="12"
                                       placeholder="내용을 입력하세요" th:text="${postForm?.content}"></textarea>
+                        </div>
+                        <div th:if="${postId == null}" class="recruit-setting mb-4">
+                            <h6 class="mb-3"><i class="bi-people me-2"></i>특강·스터디 모집 <small class="text-muted">(일반 글이면 비워 두세요)</small></h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="capacity" class="form-label">모집 인원</label>
+                                    <input type="number" class="form-control" id="capacity" name="capacity" min="1" max="100" th:value="${postForm?.capacity}" placeholder="예 : 5">
+                                </div>
+                                <div class="col-md-8">
+                                    <label for="poster" class="form-label">포스터 이미지 <small class="text-muted">(jpg · png · gif · webp, 5MB까지)</small></label>
+                                    <input type="file" class="form-control" id="poster" name="poster" accept="image/jpeg,image/png,image/gif,image/webp">
+                                </div>
+                            </div>
                         </div>
                         <div class="d-flex justify-content-end gap-2">
                             <a th:href="${postId == null} ? @{/board} : @{/board/{id}(id=${postId})}" class="btn btn-outline-secondary btn-sm-custom">취소</a>
@@ -49,5 +62,15 @@
                 </div>
             </div>
         </main>
+        <script>
+            const poster = document.getElementById('poster');
+            if (poster) poster.addEventListener('change', () => {
+                const file = poster.files[0];
+                if (file && file.size > 5 * 1024 * 1024) {
+                    alert('포스터는 5MB까지 올릴 수 있습니다.');
+                    poster.value = '';
+                }
+            });
+        </script>
     </body>
 </html>

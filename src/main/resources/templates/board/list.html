@@ -26,6 +26,8 @@
                         <span><i class="bi-person-circle me-1"></i><strong sec:authentication="name">user</strong>님</span>
                         <a th:if="${listTitle == null}" th:href="@{/board/my}" class="btn btn-light btn-sm-custom"><i class="bi-person-lines-fill me-1"></i>내가 쓴 글</a>
                         <a th:if="${listTitle != null}" th:href="@{/board}" class="btn btn-light btn-sm-custom"><i class="bi-list me-1"></i>전체 글</a>
+                        <a th:href="@{/cart}" class="btn btn-light btn-sm-custom"><i class="bi-basket me-1"></i>신청 바구니
+                            <span class="badge bg-danger" th:if="${session.cart != null and !session.cart.isEmpty()}" th:text="${session.cart.size()}">0</span></a>
                     </th:block>
                     <a sec:authorize="isAnonymous()" th:href="@{/login}" class="btn btn-light btn-sm-custom"><i class="bi-box-arrow-in-right me-1"></i>로그인</a>
                 </div>
@@ -70,6 +72,8 @@
                                 <tr th:each="post : ${posts}">
                                     <td th:text="${post.id}">1</td>
                                     <td class="text-start">
+                                        <span th:if="${post.recruit and !post.full}" class="recruit-badge me-1" th:text="|모집 ${post.appliedCount}/${post.capacity}|">모집 0/5</span>
+                                        <span th:if="${post.full}" class="recruit-badge closed me-1">마감</span>
                                         <a th:href="@{/board/{id}(id=${post.id})}" th:text="${post.title}" class="board-title">제목</a>
                                         <span th:if="${post.comments.size() > 0}" class="comment-count" th:text="|[${post.comments.size()}]|">[3]</span>
                                         <span th:if="${post.updatedAt != null}" class="edited-badge">수정됨</span>

@@ -33,6 +33,8 @@ build/
 .vscode/
 
 # Local database credentials
+# User-uploaded posters
+/uploads/
 /application-local.properties
 application-secret.properties
 application-secret.properties
