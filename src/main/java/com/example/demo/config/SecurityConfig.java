@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/hello").permitAll()
                 .requestMatchers("/board", "/board/{id:\\d+}").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers("/ws").permitAll()
                 .requestMatchers("/testdb").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
